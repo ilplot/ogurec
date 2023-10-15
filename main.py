@@ -133,15 +133,15 @@ async def auth(details: CreateUserRequest, db: Session = Depends(get_db)):
 
 @app.post("/image")
 async def im_post(token : str, image: UploadFile = File(...), db: Session = Depends(get_db)):
-    #if db.query(User).filter(User.token == token).first():
-    contents = await image.read()
-    filename = image.filename
-    with open(f"predict.jpg", 'wb') as file:
-        file.write(contents)
-    #print(image_to_numbers(path_to_photo='predict.jpg'))
-    return image_to_numbers(filename=filename, path_to_photo='predict.jpg')
-    # else:
-    #     return {'message': 'Вы не авторизованы'}
+    if db.query(User).filter(User.token == token).first():
+        contents = await image.read()
+        filename = image.filename
+        with open(f"predict.jpg", 'wb') as file:
+            file.write(contents)
+        #print(image_to_numbers(path_to_photo='predict.jpg'))
+        return image_to_numbers(filename=filename, path_to_photo='predict.jpg')
+    else:
+        return {'message': 'Вы не авторизованы'}
 
 
 if __name__ == '__main__':
